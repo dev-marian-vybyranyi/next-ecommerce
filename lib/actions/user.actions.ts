@@ -1,8 +1,8 @@
-'use server';
+"use server";
 
-import { signInFormSchema } from '../validators';
-import { signIn, signOut } from '@/auth';
-import { isRedirectError } from 'next/dist/client/components/redirect';
+import { signInFormSchema } from "../validators";
+import { signIn, signOut } from "@/auth";
+import { isRedirectError } from "next/dist/client/components/redirect";
 
 // Sign in the user with credentials
 export async function signInWithCredentials(
@@ -11,13 +11,13 @@ export async function signInWithCredentials(
 ) {
   try {
     const user = signInFormSchema.parse({
-      email: formData.get('email'),
-      password: formData.get('password'),
+      email: formData.get("email"),
+      password: formData.get("password"),
     });
 
-    await signIn('credentials', user);
+    await signIn("credentials", user);
 
-    return { success: true, message: 'Signed in successfully' };
+    return { success: true, message: "Signed in successfully" };
   } catch (error) {
     if (isRedirectError(error)) {
       throw error;
@@ -25,7 +25,7 @@ export async function signInWithCredentials(
   }
 }
 
-// Sign the user out
+// Sign user out
 export async function signOutUser() {
   await signOut();
 }
