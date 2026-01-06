@@ -1,8 +1,7 @@
 "use server";
-
 import { signInFormSchema } from "../validators";
 import { signIn, signOut } from "@/auth";
-import { isRedirectError } from "next/dist/client/components/redirect";
+import { redirect } from "next/navigation";
 
 // Sign in the user with credentials
 export async function signInWithCredentials(
@@ -14,14 +13,14 @@ export async function signInWithCredentials(
       email: formData.get("email"),
       password: formData.get("password"),
     });
-
     await signIn("credentials", user);
-
     return { success: true, message: "Signed in successfully" };
   } catch (error) {
-    if (isRedirectError(error)) {
+    // Перевіряємо чи це помилка редиректу
+    if (error instanceof Error && error.message === "NEXT_REDIRECT") {
       throw error;
     }
+    return { success: false, message: "Invalid email or password" };
   }
 }
 
