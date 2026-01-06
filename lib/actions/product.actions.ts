@@ -9,7 +9,11 @@ export async function getLatestProducts() {
     orderBy: { createdAt: "desc" },
   });
 
-  return convertToPlainObject(data);
+  return data.map((product) => ({
+    ...convertToPlainObject(product),
+    price: product.price.toString(),
+    rating: product.rating.toString(),
+  }));
 }
 
 export async function getProductBySlug(slug: string) {
