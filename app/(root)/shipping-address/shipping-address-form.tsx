@@ -8,6 +8,7 @@ import { shippingAddressSchema } from "@/lib/validators";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ControllerRenderProps, useForm, SubmitHandler } from "react-hook-form";
 import { z } from "zod";
+import { shippingAddressDefaultValues } from "@/lib/constants";
 import {
   Form,
   FormControl,
@@ -27,7 +28,7 @@ const ShippingAddressForm = ({ address }: { address: ShippingAddress }) => {
 
   const form = useForm<z.infer<typeof shippingAddressSchema>>({
     resolver: zodResolver(shippingAddressSchema),
-    defaultValues: address,
+    defaultValues: address || shippingAddressDefaultValues,
   });
 
   const [isPending, startTransition] = useTransition();
