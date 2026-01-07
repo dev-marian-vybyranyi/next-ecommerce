@@ -39,15 +39,7 @@ const ProfileForm = () => {
       });
     }
 
-    const newSession = {
-      ...session,
-      user: {
-        ...session?.user,
-        name: values.name,
-      },
-    };
-
-    await update(newSession);
+    await update({ name: values.name });
 
     toast({
       description: res.message,
