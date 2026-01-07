@@ -3,12 +3,14 @@
 import { auth } from "@/auth";
 import { prisma } from "@/db/prisma";
 import { CartItem } from "@/types";
+import { Prisma } from "@prisma/client";
+import { revalidatePath } from "next/cache";
 import { PAGE_SIZE } from "../constants";
 import { convertToPlainObject, formatError } from "../utils";
 import { insertOrderSchema } from "../validators";
 import { getMyCart } from "./cart.actions";
 import { getUserById } from "./user.actions";
-import { Prisma } from "@prisma/client";
+
 
 // Create order and create the order items
 export async function createOrder() {
@@ -208,4 +210,20 @@ export async function getAllOrders({
     data,
     totalPages: Math.ceil(dataCount / limit),
   };
+}
+
+// Delete an order
+export async function deleteOrder(id: string) {
+  try {
+    await prisma.order.delete({ where: { id } });
+
+    revalidatePath('/admin/orders');
+
+    return {
+      success: true,
+      message: 'Order deleted successfully',
+    };
+  } catch (error) {
+    return { success: false, message: formatError(error) };
+  }
 }
