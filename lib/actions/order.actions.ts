@@ -230,7 +230,13 @@ export async function deleteOrder(id: string) {
 // Update COD order to paid
 export async function updateOrderToPaidCOD(orderId: string) {
   try {
-    // await updateOrderToPaid({ orderId });
+    await prisma.order.update({
+      where: { id: orderId },
+      data: {
+        isPaid: true,
+        paidAt: new Date(),
+      },
+    });
 
     revalidatePath(`/order/${orderId}`);
 
