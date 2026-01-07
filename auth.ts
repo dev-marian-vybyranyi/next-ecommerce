@@ -86,7 +86,7 @@ export const config = {
           });
         }
 
-        if (trigger === "signIn" || trigger === "signUn") {
+        if (trigger === "signIn" || trigger === "signUp") {
           const cookieObject = await cookies();
           const sessionCartId = cookieObject.get("sessionCartId")?.value;
 
