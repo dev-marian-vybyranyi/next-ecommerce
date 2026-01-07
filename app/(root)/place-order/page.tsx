@@ -1,13 +1,7 @@
 import { auth } from "@/auth";
-import { getMyCart } from "@/lib/actions/cart.actions";
-import { getUserById } from "@/lib/actions/user.actions";
-import { ShippingAddress } from "@/types";
-import { Metadata } from "next";
-import { redirect } from "next/navigation";
 import CheckoutSteps from "@/components/shared/checkout-steps";
-import { Card, CardContent } from "@/components/ui/card";
-import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import {
   Table,
   TableBody,
@@ -16,8 +10,15 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import Image from "next/image";
+import { getMyCart } from "@/lib/actions/cart.actions";
+import { getUserById } from "@/lib/actions/user.actions";
 import { formatCurrency } from "@/lib/utils";
+import { ShippingAddress } from "@/types";
+import { Metadata } from "next";
+import Image from "next/image";
+import Link from "next/link";
+import { redirect } from "next/navigation";
+import PlaceOrderForm from "./place-order-form";
 
 export const metadata: Metadata = {
   title: "Place Order",
@@ -88,7 +89,7 @@ const PlaceOrderPage = async () => {
                     <TableRow key={item.slug}>
                       <TableCell>
                         <Link
-                          href={`/product/{item.slug}`}
+                          href={`/product/${item.slug}`}
                           className="flex items-center"
                         >
                           <Image
@@ -132,6 +133,7 @@ const PlaceOrderPage = async () => {
                 <div>Total</div>
                 <div>{formatCurrency(cart.totalPrice)}</div>
               </div>
+              <PlaceOrderForm />
             </CardContent>
           </Card>
         </div>
