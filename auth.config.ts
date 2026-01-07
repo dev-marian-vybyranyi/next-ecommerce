@@ -18,8 +18,9 @@ export const authConfig = {
         /\/payment-method/,
         /\/place-order/,
         /\/profile/,
-        /\/user/,
-        /\/order/,
+        /\/user\/(.*)/,
+        /\/order\/(.*)/,
+        /\/admin/,
       ];
 
       // Get pathname from the req URL object
