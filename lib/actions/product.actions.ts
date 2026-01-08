@@ -1,25 +1,23 @@
 "use server";
 import { prisma } from "@/db/prisma";
-import { Prisma } from "@prisma/client";
-import { revalidatePath } from "next/cache";
-import z from "zod";
-import { LATEST_PRODUCTS_LIMIT, PAGE_SIZE } from "../constants";
 import { convertToPlainObject, formatError } from "../utils";
+import { LATEST_PRODUCTS_LIMIT, PAGE_SIZE } from "../constants";
+import { revalidatePath } from "next/cache";
 import { insertProductSchema, updateProductSchema } from "../validators";
+import { z } from "zod";
+import { Prisma } from "@prisma/client";
 
+// Get latest products
 export async function getLatestProducts() {
   const data = await prisma.product.findMany({
     take: LATEST_PRODUCTS_LIMIT,
     orderBy: { createdAt: "desc" },
   });
 
-  return data.map((product) => ({
-    ...convertToPlainObject(product),
-    price: product.price.toString(),
-    rating: product.rating.toString(),
-  }));
+  return convertToPlainObject(data);
 }
 
+// Get single product by it's slug
 export async function getProductBySlug(slug: string) {
   return await prisma.product.findFirst({
     where: { slug: slug },
@@ -53,21 +51,49 @@ export async function getAllProducts({
   rating?: string;
   sort?: string;
 }) {
+  // Query filter
   const queryFilter: Prisma.ProductWhereInput =
     query && query !== "all"
       ? {
           name: {
             contains: query,
             mode: "insensitive",
+          } as Prisma.StringFilter,
+        }
+      : {};
+
+  // Category filter
+  const categoryFilter = category && category !== "all" ? { category } : {};
+
+  // Price filter
+  const priceFilter: Prisma.ProductWhereInput =
+    price && price !== "all"
+      ? {
+          price: {
+            gte: Number(price.split("-")[0]),
+            lte: Number(price.split("-")[1]),
+          },
+        }
+      : {};
+
+  // Rating filter
+  const ratingFilter =
+    rating && rating !== "all"
+      ? {
+          rating: {
+            gte: Number(rating),
           },
         }
       : {};
 
   const data = await prisma.product.findMany({
+    orderBy: { createdAt: "desc" },
     where: {
       ...queryFilter,
+      ...categoryFilter,
+      ...priceFilter,
+      ...ratingFilter,
     },
-    orderBy: { createdAt: "desc" },
     skip: (page - 1) * limit,
     take: limit,
   });
