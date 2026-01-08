@@ -1,9 +1,10 @@
-import ProductList from "@/components/shared/products/product-list";
-import {
-  getLatestProducts,
-  getFeaturedProducts,
-} from "@/lib/actions/product.actions";
 import ProductCarousel from "@/components/shared/products/product-carousel";
+import ProductList from "@/components/shared/products/product-list";
+import ViewAllProductsButton from "@/components/view-all-products-button";
+import {
+  getFeaturedProducts,
+  getLatestProducts,
+} from "@/lib/actions/product.actions";
 
 const Homepage = async () => {
   const latestProducts = await getLatestProducts();
@@ -15,6 +16,7 @@ const Homepage = async () => {
         <ProductCarousel data={featuredProducts} />
       )}
       <ProductList data={latestProducts} title="Newest Arrivals" limit={4} />
+      <ViewAllProductsButton />
     </>
   );
 };
