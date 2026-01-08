@@ -21,13 +21,18 @@ import { Order } from "@/types";
 import Image from "next/image";
 import Link from "next/link";
 import { useTransition } from "react";
+import StripePayment from "./stripe-payment";
 
 const OrderDetailsTable = ({
   order,
   isAdmin,
+  stripeClientSecret,
+  paypalClientId,
 }: {
   order: Order;
   isAdmin: boolean;
+  stripeClientSecret: string | null;
+  paypalClientId: string;
 }) => {
   const {
     id,
@@ -185,6 +190,14 @@ const OrderDetailsTable = ({
                 <div>Total</div>
                 <div>{formatCurrency(totalPrice)}</div>
               </div>
+              {/* Stripe Payment */}
+              {!isPaid && paymentMethod === "Stripe" && stripeClientSecret && (
+                <StripePayment
+                  priceInCents={Number(order.totalPrice) * 100}
+                  orderId={order.id}
+                  clientSecret={stripeClientSecret}
+                />
+              )}
               {/* Cash On Delivery */}
               {isAdmin && !isPaid && paymentMethod === "CashOnDelivery" && (
                 <MarkAsPaidButton />
